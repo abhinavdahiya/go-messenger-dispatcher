@@ -1,2 +1,2 @@
 # A Stateful Dispatcher
-### Helps dispactch callbacks from messenger-platform through a Finite State Machine
+Helps dispatch callbacks from messenger-platform through a Finite State Machine
