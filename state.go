@@ -95,8 +95,8 @@ func (s *State) Test(c mbotapi.Callback) (string, error) {
 type Action func(c mbotapi.Callback, bot *mbotapi.BotAPI) error
 
 // Create a new empty state
-func MakeState(name string) *State {
-	return &State{
+func MakeState(name string) State {
+	return State{
 		Name:          name,
 		Enter:         nil,
 		Leave:         nil,
