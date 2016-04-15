@@ -45,7 +45,6 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 		// If no state found, initialize user to init state
 		tmp := d.States[d.InitState]
 		d.StoreState(c.Sender, tmp)
-		return err
 	}
 
 	// load next state
