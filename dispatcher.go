@@ -2,6 +2,7 @@ package dispatcher
 
 import (
 	"errors"
+	"log"
 
 	"github.com/abhinavdahiya/go-messenger-bot"
 )
@@ -15,6 +16,7 @@ type Dispatcher struct {
 	States map[string]State
 	Storage
 	InitState string
+	Debug     bool
 }
 
 func NewDispatcher() *Dispatcher {
@@ -24,6 +26,7 @@ func NewDispatcher() *Dispatcher {
 			Store: make(map[mbotapi.User]State),
 		},
 		InitState: "start",
+		Debug:     false,
 	}
 }
 
@@ -45,7 +48,14 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 		// If no state found, initialize user to init state
 		tmp := d.States[d.InitState]
 		d.StoreState(c.Sender, tmp)
+		curr = tmp
 	}
+
+	if d.Debug {
+		log.Printf("[DEBUG] %#v", curr)
+		log.Printf("[DEBUG] [CTX] %#v", Get(&curr))
+	}
+
 	var cLeave Action
 	_, cLeave = curr.Actions()
 
@@ -70,6 +80,12 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	ctx := Get(&curr)
 	Set(&next, ctx)
 	next.Flush()
+
+	if d.Debug {
+		log.Printf("[DEBUG] %#v", curr)
+		log.Printf("[DEBUG] [CTX] %#v", Get(&curr))
+	}
+
 	if nEnter != nil {
 		err = nEnter(c, bot)
 		if err != nil {
@@ -78,5 +94,9 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	}
 
 	d.StoreState(c.Sender, next)
+
+	if d.Debug {
+		log.Printf("[DEBUG] %#v", d.Storage)
+	}
 	return nil
 }
