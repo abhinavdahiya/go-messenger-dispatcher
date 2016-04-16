@@ -82,8 +82,8 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	next.Flush()
 
 	if d.Debug {
-		log.Printf("[DEBUG] %#v", curr)
-		log.Printf("[DEBUG] [CTX] %#v", Get(&curr))
+		log.Printf("[DEBUG] %#v", next)
+		log.Printf("[DEBUG] [CTX] %#v", Get(&next))
 	}
 
 	if nEnter != nil {
