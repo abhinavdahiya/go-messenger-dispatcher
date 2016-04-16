@@ -28,14 +28,14 @@ func NewDispatcher() *Dispatcher {
 }
 
 func (d *Dispatcher) AddState(s State) {
-	d.States[s.Name] = s
+	d.States[s.Name()] = s
 }
 
 func (d *Dispatcher) LoadState(name string) (State, error) {
 	if s, ok := d.States[name]; ok {
 		return s, nil
 	}
-	return State{}, errors.New("Unknown State.")
+	return nil, errors.New("Unknown State.")
 }
 
 func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
@@ -46,34 +46,34 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 		tmp := d.States[d.InitState]
 		d.StoreState(c.Sender, tmp)
 	}
-
-	// load next state
-	var ns string
-	if curr.IsMoved {
-		ns = curr.Chain
-	}
-	ns, err = curr.Test(c)
-	if err != nil {
-		return err
-	}
-
-	var next State
-	next, err = d.LoadState(ns)
+	var cLeave Action
+	_, cLeave = curr.Actions()
 
 	// exec Leave action for the state
-	if curr.Leave != nil {
-		err := curr.Leave(c, bot)
+	if cLeave != nil {
+		err := cLeave(c, bot)
 		if err != nil {
 			return err
 		}
 	}
 
+	// load next state
+	curr.Transitor(c)
+	ns := curr.Next()
+
+	var next State
+	next, err = d.LoadState(ns)
+	var nEnter Action
+	nEnter, _ = next.Actions()
+
 	// load the next state
-	ctx := curr.Data()
-	next.SetData(ctx)
-	err = next.Enter(c, bot)
-	if err != nil {
-		return err
+	ctx := Get(&curr)
+	Set(&next, ctx)
+	if nEnter != nil {
+		err = nEnter(c, bot)
+		if err != nil {
+			return err
+		}
 	}
 
 	d.StoreState(c.Sender, next)

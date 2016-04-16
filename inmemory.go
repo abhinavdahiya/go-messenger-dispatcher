@@ -19,5 +19,5 @@ func (i *InMemory) FetchState(u mbotapi.User) (State, error) {
 	if s, ok := i.Store[u]; ok {
 		return s, nil
 	}
-	return State{}, errors.New("State not found")
+	return nil, errors.New("State not found")
 }
