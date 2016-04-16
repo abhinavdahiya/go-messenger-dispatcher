@@ -69,6 +69,7 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	// load the next state
 	ctx := Get(&curr)
 	Set(&next, ctx)
+	next.Flush()
 	if nEnter != nil {
 		err = nEnter(c, bot)
 		if err != nil {
