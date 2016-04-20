@@ -7,15 +7,12 @@ import (
 )
 
 type MockState struct {
-	ID           string
-	Enter, Leave Action
-
 	IsMoved bool
 	Chain   string
 }
 
 func (m *MockState) Name() string {
-	return m.ID
+	return "mock"
 }
 
 func (m *MockState) Transit(s string) {
