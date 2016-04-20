@@ -70,6 +70,9 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	// load next state
 	curr.Transitor(c)
 	ns := curr.Next()
+	if ns == "" {
+		ns = d.InitState
+	}
 
 	var next State
 	next, err = d.LoadState(ns)
