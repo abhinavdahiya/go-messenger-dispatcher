@@ -70,6 +70,10 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	// load next state
 	curr.Transitor(c)
 	ns := curr.Next()
+
+	// If next state is empty
+	// move to initial state
+	// Should you process the message through InitState??
 	if ns == "" {
 		ns = d.InitState
 	}
@@ -80,8 +84,9 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	nEnter, _ = next.Actions()
 
 	// load the next state
-	ctx := Get(&curr)
-	Set(&next, ctx)
+	if ctx := Get(&curr); ctx != nil {
+		Set(&next, ctx)
+	}
 	next.Flush()
 
 	if d.Debug {
