@@ -46,7 +46,7 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	curr, err := d.FetchState(c.Sender)
 	if err != nil {
 		// If no state found, initialize user to init state
-		tmp := d.States[d.InitState]
+		tmp, _ := d.LoadState(d.InitState)
 		d.StoreState(c.Sender, tmp)
 		curr = tmp
 	}
@@ -68,14 +68,16 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	}
 
 	// load next state
-	curr.Transitor(c)
+	curr.Transitor(c, bot)
 	ns := curr.Next()
 
 	// If next state is empty
 	// move to initial state
 	// Should you process the message through InitState??
 	if ns == "" {
-		ns = d.InitState
+		tmp, _ := d.LoadState(d.InitState)
+		tmp.Transitor(c, bot)
+		ns = tmp.Next()
 	}
 
 	var next State

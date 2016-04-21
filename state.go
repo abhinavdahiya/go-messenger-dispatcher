@@ -11,7 +11,7 @@ type State interface {
 	// returns the next state
 	Next() string
 	// sets next state according to input
-	Transitor(mbotapi.Callback)
+	Transitor(mbotapi.Callback, *mbotapi.BotAPI)
 	// Actions
 	Actions() (Action, Action)
 	// Flush state to default
