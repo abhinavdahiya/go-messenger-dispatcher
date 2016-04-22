@@ -121,7 +121,7 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	// Move CTX
 	// Run Enter action of next
 	next, nerr := d.getState(ns)
-	if nerr == nil {
+	if nerr != nil {
 		return err
 	}
 
