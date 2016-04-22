@@ -36,6 +36,7 @@ func (d *Dispatcher) AddState(s State) {
 
 func (d *Dispatcher) LoadState(name string) (State, error) {
 	if s, ok := d.States[name]; ok {
+		s.Flush()
 		return s, nil
 	}
 	return nil, errors.New("Unknown State.")
@@ -79,7 +80,6 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 		tmp, _ := d.LoadState(d.InitState)
 		var tLeave Action
 		_, tLeave = tmp.Actions()
-
 		if tLeave != nil {
 			err := tLeave(tmp, c, bot)
 			if err != nil {
@@ -104,7 +104,6 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	if ctx := GetCTX(&curr); ctx != nil {
 		SetCTX(&next, ctx)
 	}
-	next.Flush()
 
 	if d.Debug {
 		log.Printf("[DEBUG] %#v", next)
