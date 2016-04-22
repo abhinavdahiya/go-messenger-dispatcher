@@ -33,8 +33,10 @@ func NewDispatcher() *Dispatcher {
 }
 
 // Add state to the dispatcher
-func (d *Dispatcher) AddState(s State) {
-	d.States[s.Name] = s
+func (d *Dispatcher) AddState(states ...State) {
+	for _, s := range states {
+		d.States[s.Name] = s
+	}
 }
 
 // Gets a state registered with dispatcher
