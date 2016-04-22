@@ -12,7 +12,7 @@ var (
 )
 
 // Set stores a context for particular state.
-func Set(s *State, val interface{}) {
+func SetCTX(s *State, val interface{}) {
 	mutex.Lock()
 	if data[s] == nil {
 		datat[s] = time.Now().Unix()
@@ -22,7 +22,7 @@ func Set(s *State, val interface{}) {
 }
 
 // Get returns the context stores for particular state.
-func Get(s *State) interface{} {
+func GetCTX(s *State) interface{} {
 	mutex.RLock()
 	if ctx := data[s]; ctx != nil {
 		value := ctx

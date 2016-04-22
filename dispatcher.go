@@ -45,7 +45,6 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	// fetch the current state of the user
 	curr, err := d.FetchState(c.Sender)
 	if err != nil {
-		// If no state found, initialize user to init state
 		tmp, _ := d.LoadState(d.InitState)
 		d.StoreState(c.Sender, tmp)
 		curr = tmp
@@ -53,7 +52,7 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 
 	if d.Debug {
 		log.Printf("[DEBUG] %#v", curr)
-		log.Printf("[DEBUG] [CTX] %#v", Get(&curr))
+		log.Printf("[DEBUG] [CTX] %#v", GetCTX(&curr))
 	}
 
 	var cLeave Action
@@ -68,7 +67,6 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	}
 
 	// load next state
-	curr.Transitor(c, bot)
 	ns := curr.Next()
 
 	// If next state is empty
@@ -76,24 +74,35 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	// Should you process the message through InitState??
 	if ns == "" {
 		tmp, _ := d.LoadState(d.InitState)
-		tmp.Transitor(c, bot)
+		var tLeave Action
+		_, tLeave = tmp.Actions()
+
+		if tLeave != nil {
+			err := tLeave(&curr, c, bot)
+			if err != nil {
+				return err
+			}
+		}
 		ns = tmp.Next()
 	}
 
 	var next State
 	next, err = d.LoadState(ns)
+	if err != nil {
+		return err
+	}
 	var nEnter Action
 	nEnter, _ = next.Actions()
 
-	// load the next state
-	if ctx := Get(&curr); ctx != nil {
-		Set(&next, ctx)
+	// load the next state context
+	if ctx := GetCTX(&curr); ctx != nil {
+		SetCTX(&next, ctx)
 	}
 	next.Flush()
 
 	if d.Debug {
 		log.Printf("[DEBUG] %#v", next)
-		log.Printf("[DEBUG] [CTX] %#v", Get(&next))
+		log.Printf("[DEBUG] [CTX] %#v", GetCTX(&next))
 	}
 
 	if nEnter != nil {
