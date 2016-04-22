@@ -81,7 +81,7 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 		_, tLeave = tmp.Actions()
 
 		if tLeave != nil {
-			err := tLeave(curr, c, bot)
+			err := tLeave(tmp, c, bot)
 			if err != nil {
 				return err
 			}
