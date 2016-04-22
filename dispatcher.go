@@ -60,7 +60,7 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 
 	// exec Leave action for the state
 	if cLeave != nil {
-		err := cLeave(&curr, c, bot)
+		err := cLeave(curr, c, bot)
 		if err != nil {
 			return err
 		}
@@ -78,7 +78,7 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 		_, tLeave = tmp.Actions()
 
 		if tLeave != nil {
-			err := tLeave(&curr, c, bot)
+			err := tLeave(curr, c, bot)
 			if err != nil {
 				return err
 			}
@@ -106,7 +106,7 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	}
 
 	if nEnter != nil {
-		err = nEnter(&next, c, bot)
+		err = nEnter(next, c, bot)
 		if err != nil {
 			return err
 		}
