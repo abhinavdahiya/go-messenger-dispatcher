@@ -91,7 +91,7 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	var cl Action
 	_, cl = curr.Actions()
 	if cl != nil {
-		err := cl(curr, c, bot)
+		err := cl(&curr, c, bot)
 		if err != nil {
 			log.Printf("[ERROR] (Message: %v) (Error: %s)", c, err)
 			return err
@@ -108,7 +108,7 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 		var tl Action
 		_, tl = ts.Actions()
 		if tl != nil {
-			tl(ts, c, bot)
+			tl(&ts, c, bot)
 		}
 		ns = ts.Next()
 	}
@@ -137,7 +137,7 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	var ne Action
 	ne, _ = next.Actions()
 	if ne != nil {
-		err = ne(next, c, bot)
+		err = ne(&next, c, bot)
 		if err != nil {
 			log.Printf("[ERROR] (Message: %v) (Error: %s)", c, err)
 			return err

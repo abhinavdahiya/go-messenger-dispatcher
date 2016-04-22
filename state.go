@@ -60,4 +60,4 @@ func (s *State) Actions() (Action, Action) {
 
 // This is the function that performs action
 // on entering or leaving a particular state
-type Action func(state State, c mbotapi.Callback, bot *mbotapi.BotAPI) error
+type Action func(state *State, c mbotapi.Callback, bot *mbotapi.BotAPI) error
