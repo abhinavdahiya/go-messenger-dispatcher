@@ -25,13 +25,13 @@ func (m *MockState) Flush() {
 	m.Chain = ""
 }
 
-func mockEnter(state *State, c mbotapi.Callback, bot *mbotapi.BotAPI) error {
+func mockEnter(state State, c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	msg := mbotapi.NewMessage("HI boss!!")
 	bot.Send(c.Sender, msg, mbotapi.RegularNotif)
 	return nil
 }
 
-func mockLeave(state *State, c mbotapi.Callback, bot *mbotapi.BotAPI) error {
+func mockLeave(state State, c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	msg := mbotapi.NewMessage("To the next step boss!!")
 	bot.Send(c.Sender, msg, mbotapi.RegularNotif)
 	return nil
