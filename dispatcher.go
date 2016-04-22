@@ -68,6 +68,9 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 
 	// load next state
 	ns := curr.Next()
+	if d.Debug {
+		log.Printf("[DEBUG] Next State: %s", ns)
+	}
 
 	// If next state is empty
 	// move to initial state
@@ -84,6 +87,9 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 			}
 		}
 		ns = tmp.Next()
+		if d.Debug {
+			log.Printf("[DEBUG] [Init] Next State: %s", ns)
+		}
 	}
 
 	var next State
