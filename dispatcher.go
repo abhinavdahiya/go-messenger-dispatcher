@@ -65,7 +65,7 @@ func (d *Dispatcher) StoreUserState(u mbotapi.User, s State) {
 
 func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	if d.Debug {
-		log.Printf("[DEBUG] (User: %v)Processing Starting =================================", c.Sender)
+		log.Printf("[DEBUG] (User: %v)\n====== Processing Starting =======", c.Sender)
 	}
 	// fetch the current state of the user
 	// if ErrNoCurrentState load init state to user
@@ -147,5 +147,8 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 	// Update new state of the user
 	d.StoreUserState(c.Sender, next)
 
+	if d.Debug {
+		log.Printf("[DEBUG] (User: %v)\n====== Processing Done =======", c.Sender)
+	}
 	return nil
 }
