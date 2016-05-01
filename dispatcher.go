@@ -111,6 +111,9 @@ func (d *Dispatcher) Process(c mbotapi.Callback, bot *mbotapi.BotAPI) error {
 			tl(&ts, c, bot)
 		}
 		ns = ts.Next()
+		if ns == "" {
+			return ErrUnknownState
+		}
 	}
 
 	if d.Debug {
